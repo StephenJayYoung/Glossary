@@ -17,6 +17,7 @@
     <!-- build:js scripts/vendor/modernizr.js -->
     <script src="bower_components/modernizr/modernizr.js"></script>
     <!-- endbuild -->
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 
   </head>
   <body>
@@ -36,10 +37,68 @@
       </div>
 
       <div class="jumbotron">
-        <h1>'Add something/look something up!</h1>
-        <p class="lead">This is a Simple Glossary App</p>
-        <p><a class="btn btn-lg btn-success" href="#">Splendid! <span class="glyphicon glyphicon-ok"></span></a></p>
+        <h1>Let's Get Wordy!</h1>
+      <form id="theForm" action="#">
+      <legend for="word">New Word</legend>
+      <input type="text" id="word" />
+      <legend for="definition">Definition</legend>
+      <textarea name="definition" id="definition" ></textarea>
+      <br>
+      <button id="addButton">Add word to dictionary</button>
+
+    </form>
+    <h2>Word List</h2>
+    <dl id="wordList"></dl>
+
       </div>
+
+
+
+
+    <script>
+      $(document).ready( function(){
+        displayDictionary(getDictionary());
+        $("#addButton").click(addWord);
+      });
+
+      function addWord(e) {
+        var entry = {};
+        entry.word = $("#word").val();
+        entry.definition = $("#definition").val();
+        var dictionary = getDictionary();
+        dictionary.push(entry);
+        saveDictionary(dictionary);
+        displayDictionary(getDictionary());
+        e.preventDefault();
+      }
+
+      function displayDictionary(d){
+        $wordList = $('#wordList');
+        $wordList.html(" ");
+        $.each(d, function(index, entry){
+          $wordList.append("<dt>" + entry.word + "</dt><dd>" + entry.definition + "</dd>");
+        });
+      }
+      function saveDictionary(d) {
+        localStorage.setItem('theDictionary', JSON.stringify(d));
+      }
+
+      function getDictionary(){
+        if (localStorage.getItem('theDictionary') === null){
+          return(initDictionary());
+        } else {
+          return(JSON.parse(localStorage.getItem('theDictionary')));
+        }
+      }
+
+      function initDictionary(){
+        var defaultDictionary = [
+            {word: "foo", definition: "See 'bar'"},
+            {word: "bar", definition: "See 'foo'"}
+          ];
+        return(defaultDictionary);
+      }
+    </script>
 
 
       <div class="footer">
